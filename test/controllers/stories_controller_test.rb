@@ -6,12 +6,12 @@ class StoriesControllerTest < ActionDispatch::IntegrationTest
     assert_response :success
   end
 
-  test "should get new" do
-    get 'stories/new'
-    assert_response :success
-    assert_template 'new'
-    assert_not_nil assigns(:story)
-  end
+  # test "should get new" do
+  #   get 'stories/new'
+  #   assert_response :success
+  #   assert_template 'new'
+  #   assert_not_nil assigns(:story)
+  # end
 
   test "new shows new form" do
     get new_story_path
@@ -29,6 +29,19 @@ class StoriesControllerTest < ActionDispatch::IntegrationTest
     end
     assert_redirected_to stories_path
     assert_not_nil flash[:notice]
+  end
+
+  test "show story" do
+    get story_path(stories(:one))
+    assert_response :success
+    assert response.body.include?(stories(:one).name)
+  end
+
+  test "show story vote elements" do
+    get story_path(stories(:one))
+    assert_select 'h2 span#vote_score'
+    assert_select 'ul#vote_history li', count: 2
+    assert_select 'div#vote_form form'
   end
 
   test "rejects when missing story attribute" do
